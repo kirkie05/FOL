@@ -1,0 +1,11 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function active() { return request.auth != null && request.auth.token.memberStatus == 'active'; }
+    function image() { return request.resource.contentType.matches('image/(jpeg|png|webp)'); }
+    match /community/{uid}/{postId}/{file} { allow read: if active(); allow write: if active() && request.auth.uid == uid && image() && request.resource.size < 8 * 1024 * 1024; }
+    match /profiles/{uid}/{file} { allow read: if active(); allow write: if active() && request.auth.uid == uid && image() && request.resource.size < 5 * 1024 * 1024; }
+    match /testimonies/{uid}/{file} { allow read: if true; allow write: if request.auth != null && request.auth.uid == uid && image() && request.resource.size < 8 * 1024 * 1024; }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}

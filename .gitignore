@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+coverage/
+.env*
+!.env.example
+firebase-debug.log
+.firebase/
+functions/lib/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.DS_Store
+/Media/

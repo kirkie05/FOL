@@ -1,0 +1,2 @@
+import Link from "next/link"; import { AuthForm } from "@/components/auth-form"; import { PageHero } from "@/components/page-hero";
+export default function RegisterPage() { return <><PageHero eyebrow="Membership" title="Find your place in the family." intro="Registration includes email verification and church approval before member-only access is granted." /><section className="content-section"><AuthForm mode="register" /><p style={{textAlign:"center"}}>Already registered? <Link className="text-link" href="/login">Sign in</Link></p></section></>; }

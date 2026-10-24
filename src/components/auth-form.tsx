@@ -1,0 +1,13 @@
+"use client";
+import { useState, type FormEvent } from "react";
+import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { auth, firebaseConfigured } from "@/lib/firebase/client";
+import { useRouter } from "next/navigation";
+
+export function AuthForm({ mode }: { mode: "login" | "register" }) {
+  const router = useRouter();
+  const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);
+  async function submit(e: FormEvent<HTMLFormElement>) { e.preventDefault(); const data = new FormData(e.currentTarget); const email = String(data.get("email")); const password = String(data.get("password")); if (!auth) { setMessage("Firebase is not configured. Add the required environment values to activate secure authentication."); return; } setBusy(true); try { if (mode === "register") { const result = await createUserWithEmailAndPassword(auth,email,password); await sendEmailVerification(result.user); setMessage("Check your email to verify your account. Membership remains pending until approval."); } else { const result=await signInWithEmailAndPassword(auth,email,password); const response=await fetch("/api/auth/session",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({idToken:await result.user.getIdToken(true)})});const payload=await response.json() as {error?:string};if(!response.ok)throw new Error(payload.error??"Unable to start session.");router.push("/app"); } } catch (error) { setMessage(error instanceof Error ? error.message : "Authentication failed."); } finally { setBusy(false); } }
+  async function reset(email: string) { if (!auth || !email) return setMessage("Enter your email first. Firebase configuration is required."); await sendPasswordResetEmail(auth,email); setMessage("Password reset email sent."); }
+  return <form className="form-card" onSubmit={submit}><h2>{mode === "login" ? "Welcome back" : "Join FOLS Connect"}</h2>{mode === "register" && <label>Full name<input name="name" required minLength={2} /></label>}<label>Email<input name="email" type="email" required /></label><label>Password<input name="password" type="password" minLength={8} required /></label><button className="button" disabled={busy} type="submit">{busy ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}</button>{mode === "login" && <button type="button" className="text-link" onClick={() => { const email = (document.querySelector('input[name="email"]') as HTMLInputElement)?.value; void reset(email); }}>Reset password</button>}<p role="status">{message || (!firebaseConfigured ? "Secure authentication is awaiting Firebase configuration." : "")}</p></form>;
+}

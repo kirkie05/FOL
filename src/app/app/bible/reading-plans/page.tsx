@@ -1,0 +1,1 @@
+export default function Plans(){return <><p className="eyebrow">Bible</p><h1>Reading plans</h1><div className="empty-state"><p>The Read the Bible in 21 Days schedule remains unavailable until approved.</p></div></>}

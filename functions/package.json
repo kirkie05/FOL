@@ -1,0 +1,9 @@
+{
+  "name": "fols-functions",
+  "private": true,
+  "main": "lib/index.js",
+  "engines": { "node": "22" },
+  "scripts": { "build": "tsc", "test": "vitest run" },
+  "dependencies": { "firebase-admin": "^14.5.0", "firebase-functions": "^7.4.0", "zod": "^4.1.12" },
+  "devDependencies": { "typescript": "^5.9.3", "vitest": "^4.0.4" }
+}

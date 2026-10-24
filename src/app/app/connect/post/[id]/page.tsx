@@ -1,0 +1,1 @@
+export default async function PostPage({params}:{params:Promise<{id:string}>}) { const {id}=await params; return <><p className="eyebrow">Community post</p><h1>Conversation</h1><div className="empty-state"><p>Post {id} will load for authorized members.</p></div></>; }

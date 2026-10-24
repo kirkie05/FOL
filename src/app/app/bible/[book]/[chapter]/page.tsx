@@ -1,0 +1,1 @@
+export default async function BibleChapter({params}:{params:Promise<{book:string;chapter:string}>}) { const {book,chapter}=await params; return <><p className="eyebrow">World English Bible</p><h1>{decodeURIComponent(book)} {chapter}</h1><div className="empty-state"><p>Licensed chapter content will be cached here after the Bible data package is configured.</p></div></>; }

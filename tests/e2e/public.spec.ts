@@ -1,0 +1,5 @@
+import { test,expect } from "@playwright/test";
+const routes=["/","/about","/beliefs","/leadership","/ministries","/ministries/unstoppables","/services","/sermons","/events","/prayer","/testimonies","/visit","/contact","/giving","/register","/login","/privacy","/terms"];
+for(const route of routes)test(`${route} renders`,async({page})=>{await page.goto(route);await expect(page.locator("h1").first()).toBeVisible();await expect(page.locator("nav#main-nav")).toBeAttached()});
+test("private routes redirect",async({page})=>{await page.goto("/app");await expect(page).toHaveURL(/\/login\?next=%2Fapp/);await page.goto("/admin");await expect(page).toHaveURL(/\/login\?next=%2Fadmin/)});
+test("visit form is accessible",async({page})=>{await page.goto("/visit");await page.getByLabel("Full name").fill("Test Visitor");await page.getByLabel("Email").fill("visitor@example.com");await page.getByLabel("Phone number").fill("08012345678");await page.getByLabel("Expected visit date").fill("2026-11-01");await page.getByLabel(/I consent/).check();await page.getByRole("button",{name:"Send visit request"}).click();await expect(page.getByRole("status")).toContainText("Firebase")});

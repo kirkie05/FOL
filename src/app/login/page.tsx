@@ -1,0 +1,2 @@
+import Link from "next/link"; import { AuthForm } from "@/components/auth-form"; import { PageHero } from "@/components/page-hero";
+export default function LoginPage() { return <><PageHero eyebrow="FOLS Connect" title="Welcome back, family." intro="Approved members can access community, Bible tools, events, giving history, and ministries." /><section className="content-section"><AuthForm mode="login" /><p style={{textAlign:"center"}}>New here? <Link className="text-link" href="/register">Create an account</Link></p></section></>; }

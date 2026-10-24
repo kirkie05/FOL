@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function role() { return signedIn() ? request.auth.token.role : null; }
+    function activeMember() { return signedIn() && request.auth.token.memberStatus == 'active'; }
+    function admin() { return role() in ['superAdmin','churchAdmin','pastor']; }
+    function finance() { return role() in ['superAdmin','financeAdmin']; }
+    function moderator() { return role() in ['superAdmin','churchAdmin','communityModerator']; }
+    function owner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /memberProfiles/{uid} { allow read: if activeMember(); allow create, update: if owner(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','bio','profileImage','ministryAffiliations','birthdayVisible','directoryVisible','updatedAt']); allow delete: if false; }
+    match /memberPrivateData/{uid} { allow read: if owner(uid) || admin(); allow write: if owner(uid) || admin(); }
+    match /memberships/{uid} { allow read: if owner(uid) || admin(); allow write: if admin(); }
+    match /communityPosts/{postId} { allow read: if activeMember(); allow create: if activeMember() && request.resource.data.authorId == request.auth.uid; allow update, delete: if (activeMember() && resource.data.authorId == request.auth.uid) || moderator(); }
+    match /postComments/{commentId} { allow read: if activeMember(); allow create: if activeMember() && request.resource.data.authorId == request.auth.uid; allow update, delete: if (activeMember() && resource.data.authorId == request.auth.uid) || moderator(); }
+    match /postReactions/{reactionId} { allow read: if activeMember(); allow create: if activeMember() && request.resource.data.userId == request.auth.uid; allow delete: if resource.data.userId == request.auth.uid; allow update: if false; }
+    match /events/{id} { allow read: if resource.data.status == 'published' || activeMember(); allow write: if admin(); }
+    match /sermons/{id} { allow read: if resource.data.status == 'published' || activeMember(); allow write: if admin(); }
+    match /ministries/{id} { allow read: if true; allow write: if admin(); }
+    match /ministryApplications/{id} { allow create: if activeMember() && request.resource.data.userId == request.auth.uid; allow read: if (activeMember() && resource.data.userId == request.auth.uid) || admin() || role() == 'ministryLeader'; allow update: if admin() || role() == 'ministryLeader'; allow delete: if false; }
+    match /visitors/{id} { allow create: if true; allow read, update: if admin(); allow delete: if false; }
+    match /prayerRequests/{id} { allow create: if true; allow read, update: if admin() || role() == 'pastor'; allow delete: if false; }
+    match /testimonies/{id} { allow create: if true; allow read: if resource.data.status == 'published' || admin(); allow update: if admin(); allow delete: if false; }
+    match /bibleBookmarks/{id} { allow read, delete: if signedIn() && resource.data.userId == request.auth.uid; allow create, update: if signedIn() && request.resource.data.userId == request.auth.uid; }
+    match /bibleHighlights/{id} { allow read, delete: if signedIn() && resource.data.userId == request.auth.uid; allow create, update: if signedIn() && request.resource.data.userId == request.auth.uid; }
+    match /bibleNotes/{id} { allow read, delete: if signedIn() && resource.data.userId == request.auth.uid; allow create, update: if signedIn() && request.resource.data.userId == request.auth.uid; }
+    match /donations/{id} { allow read: if (signedIn() && resource.data.userId == request.auth.uid) || finance(); allow write: if false; }
+    match /paymentTransactions/{id} { allow read: if (signedIn() && resource.data.userId == request.auth.uid) || finance(); allow write: if false; }
+    match /auditLogs/{id} { allow read: if role() == 'superAdmin'; allow write: if false; }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
