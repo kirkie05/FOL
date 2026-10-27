@@ -17,7 +17,7 @@ service cloud.firestore {
     match /postReactions/{reactionId} { allow read: if activeMember(); allow create: if activeMember() && request.resource.data.userId == request.auth.uid; allow delete: if resource.data.userId == request.auth.uid; allow update: if false; }
     match /events/{id} { allow read: if resource.data.status == 'published' || activeMember(); allow write: if admin(); }
     match /sermons/{id} { allow read: if resource.data.status == 'published' || activeMember(); allow write: if admin(); }
-    match /ministries/{id} { allow read: if true; allow write: if admin(); }
+    match /ministries/{id} { allow read: if resource.data.status == 'published' || admin() || activeMember(); allow write: if admin(); }
     match /ministryApplications/{id} { allow create: if activeMember() && request.resource.data.userId == request.auth.uid; allow read: if (activeMember() && resource.data.userId == request.auth.uid) || admin() || role() == 'ministryLeader'; allow update: if admin() || role() == 'ministryLeader'; allow delete: if false; }
     match /visitors/{id} { allow create: if true; allow read, update: if admin(); allow delete: if false; }
     match /prayerRequests/{id} { allow create: if true; allow read, update: if admin() || role() == 'pastor'; allow delete: if false; }

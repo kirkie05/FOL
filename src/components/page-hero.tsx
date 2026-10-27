@@ -1,22 +1,15 @@
-import Image from "next/image";
 import { Reveal } from "@/components/reveal";
 import { mediaPaths } from "@/lib/media";
 
-const heroMedia: Record<string, string> = {
-  "Who we are": mediaPaths.congregation[1],
-  "Statement of faith": mediaPaths.prayerPortrait,
-  "Church leadership": mediaPaths.pastor,
-  "Find your place": mediaPaths.choir,
-  "Worship with us": mediaPaths.serviceLectern,
-  "The Word": mediaPaths.worshipSinger,
-  "What's ahead": mediaPaths.celebration,
-  "We believe in prayer": mediaPaths.prayerWoman,
-  "Stories of grace": mediaPaths.worshipDance,
-  "Get in touch": mediaPaths.congregation[3],
-  Generosity: mediaPaths.worshipYellow,
-};
+function selectHeroVideo(key: string) {
+  const index = Array.from(key).reduce((total, character) => total + character.charCodeAt(0), 0)
+    % mediaPaths.secondaryVideos.length;
+
+  return mediaPaths.secondaryVideos[index];
+}
 
 export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: string; intro: string }) {
-  const src = heroMedia[eyebrow] ?? mediaPaths.congregation[0];
-  return <section className="page-hero"><Image className="page-hero-image" src={src} alt="" fill sizes="100vw" priority={eyebrow === "Who we are"} /><Reveal><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="page-intro">{intro}</p></Reveal></section>;
+  const video = selectHeroVideo(`${eyebrow}:${title}`);
+
+  return <section className="page-hero"><video className="page-hero-video" autoPlay muted loop playsInline preload="metadata" poster={mediaPaths.choir} aria-hidden="true"><source src={video} type="video/mp4" /></video><Reveal><p className="eyebrow">{eyebrow}</p><h1>{title}</h1><p className="page-intro">{intro}</p></Reveal></section>;
 }

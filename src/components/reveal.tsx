@@ -36,7 +36,7 @@ const heroItemVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: .9, ease: [0.22, 1, 0.36, 1] } },
 };
 
-export function HeroMotion({ eyebrow, title, children }: PropsWithChildren<{ eyebrow: React.ReactNode; title: React.ReactNode }>) {
+export function HeroMotion({ eyebrow, title, children }: PropsWithChildren<{ eyebrow?: React.ReactNode; title: React.ReactNode }>) {
   const reduced = useReducedMotion();
   return <motion.div
     className="hero-content"
@@ -44,7 +44,7 @@ export function HeroMotion({ eyebrow, title, children }: PropsWithChildren<{ eye
     initial={reduced ? false : "hidden"}
     animate={reduced ? undefined : "visible"}
   >
-    <motion.div className="hero-kicker" variants={heroItemVariants}>{eyebrow}</motion.div>
+    {eyebrow && <motion.div className="hero-kicker" variants={heroItemVariants}>{eyebrow}</motion.div>}
     <motion.div className="hero-title" variants={heroItemVariants}>{title}</motion.div>
     <motion.div className="hero-bottom" variants={heroItemVariants}>{children}</motion.div>
   </motion.div>;

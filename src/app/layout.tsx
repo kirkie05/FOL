@@ -21,5 +21,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: "#0733a8", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${archivo.variable} ${archivoNarrow.variable}`}><a href="#main" className="skip-link">Skip to content</a><SiteHeader /><main id="main">{children}</main><SiteFooter /><ServiceWorker /></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth"><body className={`${archivo.variable} ${archivoNarrow.variable}`}><a href="#main" className="skip-link">Skip to content</a><SiteHeader /><main id="main">{children}</main><SiteFooter /><ServiceWorker /></body></html>;
 }

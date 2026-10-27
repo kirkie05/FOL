@@ -1,6 +1,0 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { PageHero } from "@/components/page-hero";
-export const metadata: Metadata = { title: "The Unstoppables" };
-const activities = [{ title:"Weekly Virtual Prayer Meeting", detail:"Wednesday · 8:30 PM · Virtual" },{ title:"Monthly Youth Vigil", detail:"Second Friday monthly · 11:00 PM · Teens Church" },{ title:"Growth and Leadership Cohorts", detail:"Structured spiritual growth and leadership development. The 21-day Bible plan awaits an approved schedule." }];
-export default function UnstoppablesPage() { return <><PageHero eyebrow="Youth & Young Adults Ministry" title="The Unstoppables" intro="The next generation is not just the future of FOLS; they are leading it today." /><section className="content-section"><p className="page-intro">Our energetic community helps young professionals and students in Lagos express their gifts, lead initiatives, and build strong professional and spiritual networks.</p><div className="detail-grid">{activities.map((a) => <article className="detail-card" key={a.title}><h2>{a.title}</h2><p>{a.detail}</p></article>)}</div><Link className="button" href="/login?next=/app/ministries">Join this ministry</Link></section></>; }

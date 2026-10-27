@@ -1,2 +1,2 @@
-import type { MetadataRoute } from "next"; import { publicPages } from "@/lib/content";
-export default function sitemap():MetadataRoute.Sitemap{const base=process.env.NEXT_PUBLIC_APP_URL??"https://fols.example";return ["",...Object.keys(publicPages),"visit","prayer","register","login","ministries/unstoppables"].map(path=>({url:`${base}/${path}`,lastModified:new Date(),changeFrequency:path===""?"weekly":"monthly",priority:path===""?1:.7}))}
+import type { MetadataRoute } from "next"; import { ministries, publicPages } from "@/lib/content";
+export default function sitemap():MetadataRoute.Sitemap{const base=process.env.NEXT_PUBLIC_APP_URL??"https://fols.example";return ["",...Object.keys(publicPages),"visit","prayer","register","login",...ministries.map(({href})=>href.slice(1))].map(path=>({url:`${base}/${path}`,lastModified:new Date(),changeFrequency:path===""?"weekly":"monthly",priority:path===""?1:.7}))}
